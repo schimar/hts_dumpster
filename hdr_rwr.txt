@@ -1,0 +1,4 @@
+sed -i '/^@HISEQ/ s/$/ 1:N:0:13/' filename.fastq
+
+awk '{print (NR%4 == 1) ? "@1_" ++i : $0}' filename.fastq
+
