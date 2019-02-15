@@ -1,0 +1,28 @@
+#! /bin/bash
+#
+#SBATCH -J smtls
+#SBATCH -N 1
+#SBATCH --ntasks-per-node=16
+#SBATCH --qos=p70640_0256			
+#SBATCH --partition mem_0256
+#SBATCH --mail-type=END,FAIL				
+#SBATCH --mail-user=<martin.schilling@uibk.ac.at>
+
+module load intel/16 htslib/1.3.2 samtools/1.3.1
+#rsync -avz ~/uibk/talpData/g12/*.fasta .
+
+#~/bio/bwa/bwa index Talp.v1.0.assembly.fasta
+
+for i in *.sam; do 
+	#file=$(echo $i | cut -f9 -d/)
+	id=$(echo $i | cut -f1 -d.)
+	#RG=${variable}'@RG:\tID:'${id}
+	echo $id
+	#
+	samtools view -S -u $i -o ${id}.bam
+	samtools sort ${id}.bam -o ${id}.sorted.bam
+	samtools index ${id}.sorted.bam
+	#samtools flagstat $i
+done
+
+

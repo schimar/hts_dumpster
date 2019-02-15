@@ -1,0 +1,26 @@
+#! /bin/bash
+#
+#SBATCH -J bwa
+#SBATCH -N 1
+#SBATCH --ntasks-per-node=16
+#SBATCH --qos=p70640_0256			
+#SBATCH --partition mem_0256
+#SBATCH --mail-type=END,FAIL				
+#SBATCH --mail-user=<martin.schilling@uibk.ac.at>
+
+
+#rsync -avz ~/uibk/talpData/g12/*.fasta .
+
+#~/bio/bwa/bwa index Talp.v1.0.assembly.fasta
+
+for i in 433*.fasta; do 
+	#file=$(echo $i | cut -f9 -d/)
+	id=$(echo $i | cut -f1 -d.)
+	#RG=${variable}'@RG:\tID:'${id}
+	echo $id
+	#
+	~/bio/bwa/bwa mem -t 16 -w 50 -k 20 -a -C -R "@RG\tID:$id\tLB:$id\tSM:$id\tPL:ILLUMINA" Talp.v1.0.assembly.fasta $i > bwaHardClipped/${id}.sam
+
+done
+
+

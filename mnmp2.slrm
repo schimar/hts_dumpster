@@ -1,0 +1,26 @@
+#! /bin/bash
+#
+#SBATCH -J minimap2
+#SBATCH -N 1
+#SBATCH --ntasks-per-node=16
+#SBATCH --qos=p70640_0256			
+#SBATCH --partition mem_0256
+#SBATCH --mail-type=END,FAIL				
+#SBATCH --mail-user=<martin.schilling@uibk.ac.at>
+
+
+#rsync -avz ~/uibk/talpData/g12/*.fasta .
+
+#~/bio/bwa/bwa index Talp.v1.0.assembly.fasta
+
+for i in 433*.fasta; do 
+	#file=$(echo $i | cut -f9 -d/)
+	id=$(echo $i | cut -f1 -d.)
+	#RG=${variable}'@RG:\tID:'${id}
+	echo $id
+	#
+	~/bio/minimap2/minimap2 -ax asm10 -R "@RG\tID:$id\tLB:$id\tSM:$id\tPL:ILLUMINA" Talp.v1.0.assembly.fasta $i > mnmp2/${id}.sam
+
+done
+
+#minimap2 -ax asm10 asm1.fa asm2.fa > aln.paf 
