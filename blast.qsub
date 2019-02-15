@@ -1,0 +1,63 @@
+#!/bin/bash -l
+#
+# Run this file using 'qsub testqsub.qsub'
+# Evan Kristiansen 2016
+
+# All lines starting with "#$" are SGE qsub commands
+
+# Specify a project to run under
+#$ -P mullenl
+
+# Give this job a name
+#$ -N blast
+
+#$ -t 1-120
+
+# Join standard output and error to a single file
+#$ -j y
+
+# Name the file where to redirect standard output and error
+#$ -o blast_sub1_logs
+
+# Send an email when the job begins and when it ends running
+# -m eas
+
+# Request a large memory node, this will affect your queue time, but it's better to overestimate
+#$ -l mem_per_core=8G
+
+# Request more cores, this will affect your queue time, make sure your program supports multithreading, or it's a waste
+#$ -pe omp 1
+
+# Now we write the script that the compute node will work on.
+
+# First, let's keep track of some information just in case anything goes wrong
+echo "=========================================================="
+echo "Starting on : $(date)"
+echo "Running on node : $(hostname)"
+echo "Current directory : $(pwd)"
+echo "Current job ID : $JOB_ID"
+echo "Current job name : $JOB_NAME"
+echo "Task index number : $SGE_TASK_ID"
+echo "=========================================================="
+
+# load any modules you might use
+# python/2.7.7 is the newest we have and has libraries that the standard version does not.
+module load bowtie
+module load samtools
+module load blast+/2.2.30
+
+# do some work
+
+blastx -query subset${SGE_TASK_ID}_s1_clownfish.fasta -db /projectnb/mullenl/smullen/RNAseq_tools/Annotate/uniref50.fasta -evalue 0.0001 -num_threads 1 -num_descriptions 5 -num_alignments 5 -out subset${SGE_TASK_ID}_s1_clownfish.fasta.br
+ 
+
+#statements
+# do other work if needed.
+
+echo "=========================================================="
+echo "Finished on : $(date)"
+echo "=========================================================="
+
+
+
+
