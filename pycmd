@@ -1,0 +1,58 @@
+# Limenitis pypeline 
+
+# only keep variants of the 37 biggest scaffolds
+~/hts_tools/subVCFbyChromList.py limenitisRaw.vcf scafs37.txt > lim37scafs.vcf 
+
+
+# remove the 5 individuals with low mapping rates (resulting in 55 individuals kept)
+~/hts_tools/sub_vcf.py lim37scafs.txt inds55.txt > lim37scafs55.vcf
+
+# filter variants
+
+~/hts_tools/vcfFilter.py lim37scafs55.vcf > lim37scafs55f1.vcf 
+# nice, ~9 million left; that should do
+
+# NOTE: the following was used for the PCA: 
+#
+#~/hts_tools/vcf2gl.py lim37scafs55f1.vcf ref alt > lim37scafs55f1.gl 
+# and we have 8.5 million vars left (after keeping only biallelic loci)
+
+# get EM estimate of p
+
+#~/hts_tools/estpEM -h 1 -i lim37scafs55f1.gl -o pEMlim37scafs55f1.txt 
+
+#~/hts_tools/freqId2freq.py pEMlim37scafs55f1.txt > freqlim37scafs55f1.txt
+
+
+# get mean genotypes 
+
+#~/hts_tools/gl2genestDip.py lim37scafs55f1.gl freqlim37scafs55f1.txt
+
+##############################
+#
+# decrease number of vars further:
+#
+grep -v '#' lim37scafs55f1.vcf | cut -f1,2 -d$'\t' > snpids.txt		# with 9227906 vars 
+
+~/hts_tools/dropCloseVars.py snpids.txt lim37scafs55f1.vcf > lim37scafs55f2.vcf 
+
+
+#~/hts_tools/getVCFstats.py lim37scafs55f2.vcf 	# mean = 
+R -q -e "x <- read.table('cov37_55f2.txt', header= F); mean(x[,1])"		# 557.4
+R -q -e "x <- read.table('cov37_55f2.txt', header= F); sd(x[,1])"		# 182.58
+# thus, the max Coverage would be 1105.14 (mean+3*sd)
+
+~/hts_tools/dropHighCovVars.py lim37scafs55f2.vcf > lim37scafs55f3.vcf 
+
+
+# now back to the usual:
+
+~/hts_tools/vcf2gl.py lim37scafs55f3.vcf ref alt > lim37scafs55f3.gl 
+
+~/hts_tools/estpEM -h 1 -i lim37scafs55f3.gl -o pEMlim37scafs55f3.txt 
+
+~/hts_tools/freqId2freq.py pEMlim37scafs55f3.txt > freqlim37scafs55f3.txt 
+
+~/hts_tools/gl2genestDip.py lim37scafs55f3.gl freqlim37scafs55f3.txt > lim37scafs55f3.txt 
+
+
