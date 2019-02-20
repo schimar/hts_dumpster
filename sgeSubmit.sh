@@ -16,7 +16,9 @@
 #$ -o out.dat
 
 # Redirect error stream to this file.
-#$ -e err.dat
+###$ -e err.dat
+# join std.err to std.out 
+#$ -j yes
 
 # Send status information to this email address.
 #$ -M martin.schilling@uibk.ac.at
@@ -24,7 +26,5 @@
 # Send an e-mail when the job is done.
 #$ -m e
 
-# For example an additional script file to be executed in the current
-# working directory. In such a case assure that script.sh has 
-# execute permission (chmod +x script.sh).
+
 ./script.sh
