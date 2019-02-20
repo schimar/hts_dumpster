@@ -27,4 +27,16 @@
 #$ -m e
 
 
-./script.sh
+./gatk.sh
+
+
+
+
+## For a parallel program execute
+
+## qsh -pe parallel-environment number-of-slots
+
+## with the SGE's parallel environment of your choice (see the list of available parallel environments with qconf -spl) and the number of processes/threads you intend to use. This is not different from submitting a parallel job with qsub. 
+## Start your parallel MPI program as depicted within the script.sh files for parallel MPI batch jobs above. For OpenMP jobs export the OMP_NUM_THREADS variable with export OMP_NUM_THREADS=$NSLOTS and start your job.
+
+
