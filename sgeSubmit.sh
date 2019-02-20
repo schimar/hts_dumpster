@@ -12,6 +12,10 @@
 # directory. The batch system assumes to find the executable in this directory.
 #$ -cwd
 
+# set the number of threads
+#$ -pe openmpi-12perhost
+
+
 # Redirect output stream to this file.
 #$ -o out.dat
 
