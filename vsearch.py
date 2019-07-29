@@ -35,7 +35,7 @@
 
 # collapse highly similar sequences (id = 0.98) within each species:
 
-./vsearch_bash 0.98 centroids
+./vsearch.sh 0.98 centroids
 
 
 ###########
@@ -45,7 +45,7 @@
 
 ## create files with only seqs < 70
 
-~/hts_tools/exclude_short_seqs_bash    # creates the files sub_centroids* (see bash script)
+~/hts_tools/exclude_short_seqs.sh    # creates the files sub_centroids* (see bash script)
 # mv sub_centroids_* subc/   (now done in the above bash script)
 
 
